@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import Modal from 'react-modal'
+
+import outcomeImg from '../../assets/outcome.svg'
+import incomeImg from '../../assets/income.svg'
 import closeImg from '../../assets/close.svg'
 
-import { Container } from './styles'
+import { Container, RadioBox, TransactionTypeContainer } from './styles'
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
   onRequestClose: () => void
@@ -9,6 +13,8 @@ interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
+  const [type, setType] = useState('deposit')
+
   return (
     <Modal
       overlayClassName="react-modal-overlay"
@@ -26,6 +32,18 @@ const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
         <input placeholder="Título" />
 
         <input placeholder="Valor" type="number" />
+
+        <TransactionTypeContainer>
+          <RadioBox isActive={type === 'deposit'} activeColor="green" type="button" onClick={() => setType('deposit')}>
+            <img src={incomeImg} alt="Entrada" />
+            <span>Entrada</span>
+          </RadioBox>
+
+          <RadioBox isActive={type === 'withdraw'} activeColor="red" type="button" onClick={() => setType('withdraw')}>
+            <img src={outcomeImg} alt="Saída" />
+            <span>Saída</span>
+          </RadioBox>
+        </TransactionTypeContainer>
 
         <input placeholder="Categoria" />
 
