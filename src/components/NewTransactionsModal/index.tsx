@@ -6,6 +6,7 @@ import incomeImg from '../../assets/income.svg'
 import closeImg from '../../assets/close.svg'
 
 import { Container, RadioBox, TransactionTypeContainer } from './styles'
+import { api } from '../../services/api'
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
   onRequestClose: () => void
@@ -13,7 +14,22 @@ interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
+  const [category, setCategory] = useState('')
   const [type, setType] = useState('deposit')
+  const [amount, setAmount] = useState(0)
+  const [title, setTitle] = useState('')
+
+  async function handleCreateNewTransaction(event: React.FormEvent) {
+    event.preventDefault()
+
+    const data = { amount, title, type, category }
+
+    try {
+      api.post('/transactions', data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <Modal
@@ -26,12 +42,17 @@ const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
-      <Container>
+      <Container onSubmit={handleCreateNewTransaction}>
         <h2>Cadastrar transação</h2>
 
-        <input placeholder="Título" />
+        <input placeholder="Título" value={title} onChange={event => setTitle(event.target.value)} />
 
-        <input placeholder="Valor" type="number" />
+        <input
+          onChange={event => setAmount(Number(event.target.value))}
+          placeholder="Valor"
+          value={amount}
+          type="number"
+        />
 
         <TransactionTypeContainer>
           <RadioBox isActive={type === 'deposit'} activeColor="green" type="button" onClick={() => setType('deposit')}>
@@ -45,7 +66,7 @@ const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
           </RadioBox>
         </TransactionTypeContainer>
 
-        <input placeholder="Categoria" />
+        <input placeholder="Categoria" value={category} onChange={event => setCategory(event.target.value)} />
 
         <button type="submit">Cadastrar</button>
       </Container>
