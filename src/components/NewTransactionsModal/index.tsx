@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Modal from 'react-modal'
+
+import { TransactionsContext } from '../../TransactionsContext'
 
 import outcomeImg from '../../assets/outcome.svg'
 import incomeImg from '../../assets/income.svg'
 import closeImg from '../../assets/close.svg'
 
 import { Container, RadioBox, TransactionTypeContainer } from './styles'
-import { api } from '../../services/api'
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
   onRequestClose: () => void
@@ -14,21 +15,24 @@ interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
+  const { createTransaction } = useContext(TransactionsContext)
+
+  const [type, setType] = useState<'deposit' | 'withdraw'>('deposit')
   const [category, setCategory] = useState('')
-  const [type, setType] = useState('deposit')
   const [amount, setAmount] = useState(0)
   const [title, setTitle] = useState('')
 
   async function handleCreateNewTransaction(event: React.FormEvent) {
     event.preventDefault()
 
-    const data = { amount, title, type, category }
+    await createTransaction({ category, type, amount, title })
 
-    try {
-      api.post('/transactions', data)
-    } catch (error) {
-      console.log(error)
-    }
+    setType('deposit')
+    setCategory('')
+    setAmount(0)
+    setTitle('')
+
+    onRequestClose()
   }
 
   return (

@@ -1,25 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { api } from '../../services/api'
+import React, { useContext } from 'react'
+
+import { TransactionsContext } from '../../TransactionsContext'
 
 import { Container } from './styles'
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-interface Transaction {
-  createdAt: string
-  category: string
-  amount: number
-  title: string
-  type: string
-  id: number
-}
-
 const TransactionsTable: React.FC<IProps> = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-
-  useEffect(() => {
-    api.get('/transactions').then(response => setTransactions(response.data.transactions))
-  }, [])
+  const { transactions } = useContext(TransactionsContext)
 
   return (
     <Container>
