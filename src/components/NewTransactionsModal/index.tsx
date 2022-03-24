@@ -1,7 +1,7 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import Modal from 'react-modal'
 
-import { TransactionsContext } from '../../TransactionsContext'
+import { useTransactions } from '../../hooks/useTransactions'
 
 import outcomeImg from '../../assets/outcome.svg'
 import incomeImg from '../../assets/income.svg'
@@ -15,7 +15,7 @@ interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const NewTransactionsModal: React.FC<IProps> = ({ onRequestClose, isOpen }) => {
-  const { createTransaction } = useContext(TransactionsContext)
+  const { createTransaction } = useTransactions()
 
   const [type, setType] = useState<'deposit' | 'withdraw'>('deposit')
   const [category, setCategory] = useState('')

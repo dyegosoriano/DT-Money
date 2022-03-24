@@ -1,13 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
-import { TransactionsContext } from '../../TransactionsContext'
+import { useTransactions } from '../../hooks/useTransactions'
 
 import { Container } from './styles'
 
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const TransactionsTable: React.FC<IProps> = () => {
-  const { transactions } = useContext(TransactionsContext)
+  const { transactions } = useTransactions()
 
   return (
     <Container>
