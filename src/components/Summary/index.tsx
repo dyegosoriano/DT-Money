@@ -1,5 +1,9 @@
-import incomeImg from '../../assets/income.svg'
+import { useContext } from 'react'
+
+import { TransactionsContext } from '../../TransactionsContext'
+
 import outcomeImg from '../../assets/outcome.svg'
+import incomeImg from '../../assets/income.svg'
 import totalImg from '../../assets/total.svg'
 
 import { Container } from './styles'
@@ -7,6 +11,27 @@ import { Container } from './styles'
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Summary: React.FC<IProps> = () => {
+  const { transactions } = useContext(TransactionsContext)
+
+  const summary = transactions.reduce(
+    (acc, transaction) => {
+      if (transaction.type === 'deposit') {
+        acc.deposit += transaction.amount
+        acc.total += transaction.amount
+      } else {
+        acc.withdraw += transaction.amount
+        acc.total -= transaction.amount
+      }
+
+      return acc
+    },
+    {
+      withdraw: 0,
+      deposit: 0,
+      total: 0
+    }
+  )
+
   return (
     <Container>
       <div>
@@ -16,7 +41,9 @@ const Summary: React.FC<IProps> = () => {
           <img src={incomeImg} alt="Entradas" />
         </header>
 
-        <strong>R$1000,00</strong>
+        <strong>
+          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.deposit)}
+        </strong>
       </div>
 
       <div>
@@ -26,7 +53,9 @@ const Summary: React.FC<IProps> = () => {
           <img src={outcomeImg} alt="Saídas" />
         </header>
 
-        <strong>- R$500,00</strong>
+        <strong>
+          - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.withdraw)}
+        </strong>
       </div>
 
       <div className="highlight-background">
@@ -36,7 +65,7 @@ const Summary: React.FC<IProps> = () => {
           <img src={totalImg} alt="Total" />
         </header>
 
-        <strong>R$500,00</strong>
+        <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.total)}</strong>
       </div>
     </Container>
   )
